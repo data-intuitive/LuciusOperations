@@ -1,5 +1,5 @@
 functionality:
-  name: fetch_jar
+  name: upload_jar
   namespace: api
   __inherits__: [ ../../variables/jar-arguments.yaml, ../../variables/api-arguments.yaml ]
   resources:

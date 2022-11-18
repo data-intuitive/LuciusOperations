@@ -1,8 +1,7 @@
 functionality:
   name: remove_context
   namespace: api
-  arguments:
-    __inherits__: ../../variables/api-arguments.yaml
+  __inherits__: ../../variables/api-arguments.yaml
   resources:
     - type: bash_script
       path: script.sh
