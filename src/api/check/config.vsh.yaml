@@ -1,0 +1,9 @@
+functionality:
+  name: check
+  namespace: api
+  __inherits__: ../../variables/api-arguments.yaml
+  resources:
+    - type: bash_script
+      path: script.sh
+platforms:
+  - type: native
