@@ -1,7 +1,7 @@
 arguments:
   - name: --endpoint
     type: string
-    required: true
+    required: false
     default: http://localhost:8090
   - name: --application
     type: string
