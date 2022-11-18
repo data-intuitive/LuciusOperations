@@ -5,7 +5,7 @@ functionality:
   arguments:
     - name: --conf
       type: file
-      default: etc/initialize.conf
+      default: etc/api.conf
     # - name: --db
     #   type: file
     #   default: /Users/toni/Dropbox/_GSK/2022/output-data/
