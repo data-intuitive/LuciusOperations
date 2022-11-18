@@ -1,0 +1,13 @@
+arguments:
+  - name: --base
+    type: string
+    default: https://github.com/data-intuitive/LuciusAPI/releases/download
+  - name: --tag
+    type: string
+    default: 5.1.0
+  - name: --jar_prefix
+    type: string
+    default: LuciusAPI-assembly
+  - name: --target
+    type: file
+    default: jars

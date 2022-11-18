@@ -2,22 +2,7 @@ functionality:
   name: remove_context
   namespace: api
   arguments:
-    - name: --endpoint
-      type: string
-      required: true
-      default: http://localhost:8090
-    - name: --application
-      type: string
-      required: false
-      default: lucius
-    - name: --classpath
-      type: string
-      required: false
-      default: com.dataintuitive.luciusapi
-    - name: --generic_options
-      type: string
-      required: false
-      default: "spark.scheduler.mode=FAIR&spark.jobserver.context-creation-timeout=60&spark.memory.fraction=0.7&spark.dynamicAllocation.enabled=false&spark.executor.instances=6&spark.executor.cores=4&spark.executor.memory=4g&spark.yarn.executor.memoryOverhead=2g&spark.yarn.am.memory=4G&spark.driver.memory=4G"
+    __inherits__: ../../variables/api-arguments.yaml
   resources:
     - type: bash_script
       path: script.sh
