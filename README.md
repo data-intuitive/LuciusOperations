@@ -1,10 +1,12 @@
 # LuciusOperations
 
-This repo is a toolbox for the maintenance of the Lucius stack.
+## Introduction
+
+This repo is a toolbox for the maintenance of the Lucius stack. The main goal is to make life easier initializing/running/checking the APIs that are part of the stack: LuciusAPI and LuciusProcessing.
 
 At the moment, the defaults are for a development environment running locally.
 
-If spark-jobserver is running, this is the (current) sequence of working components:
+If spark-jobserver is running (see the `--endpoint` argument), this is the (current) sequence of working components:
 
 ```
 target/native/api/fetch_jar/fetch_jar
@@ -17,3 +19,14 @@ To wrap up, the following can be used:
 ```
 target/native/api/remove_context/remove_context
 ```
+
+The tools should be configured for the environment out of the box, but if you find yourselve in a custom situation it's possible to override all the options. An overview of the arguments can be seen by adding `--help` or `-h` to the respective _tool_.
+
+## Prerequisites
+
+The following are required in order to run these components:
+
+- `bash`
+- `curl`
+
+If you want to _build_ the components, you will need Java 8 or higher.
