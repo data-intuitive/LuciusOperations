@@ -13,8 +13,11 @@ tmpfile=`mktemp`
 
 cp "$par_conf" "$tmpfile"
 
-gsed -i "s#__template_uri__#$par_db#" "$tmpfile"
-gsed -i "s#db\.version = .*#db.version = $par_db_version#" "$tmpfile"
+gsed -i "s#__db__#$par_db#" "$tmpfile"
+gsed -i "s#__db_version__#$par_db_version#" "$tmpfile"
+gsed -i "s#__geneAnnotations__#$par_geneAnnotations#" "$tmpfile"
+
+cat $tmpfile
 
 curl -s --data-binary "@${tmpfile}" \
   "${par_endpoint}/jobs?context=${par_application}&appName=${par_application}&classPath=${par_classpath}.initialize"

@@ -1,7 +1,9 @@
 functionality:
   name: initialize
   namespace: api
-  __inherits__: ../../variables/api-arguments.yaml
+  __inherits__:
+    - ../../variables/api-arguments.yaml
+    - ../../variables/io-arguments.yaml
   arguments:
     - name: --conf
       type: file

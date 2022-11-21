@@ -1,17 +1,13 @@
 functionality:
   name: process
   namespace: processing
-  __inherits__: ../../variables/processing-arguments.yaml
+  __inherits__: 
+    - ../../variables/processing-arguments.yaml
+    - ../../variables/io-arguments.yaml
   arguments:
     - name: --conf
       type: file
       default: etc/processing.conf
-    # - name: --db
-    #   type: file
-    #   default: /Users/toni/Dropbox/_GSK/2022/output-data/
-    # - name: --version
-    #   type: integer
-    #   default: 0
   resources:
     - type: bash_script
       path: script.sh

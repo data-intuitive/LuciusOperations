@@ -15,9 +15,3 @@ arguments:
     type: string
     required: false
     default: "spark.scheduler.mode=FAIR&spark.jobserver.context-creation-timeout=60&spark.memory.fraction=0.7&spark.dynamicAllocation.enabled=false&spark.executor.instances=6&spark.executor.cores=4&spark.executor.memory=4g&spark.yarn.executor.memoryOverhead=2g&spark.yarn.am.memory=4G&spark.driver.memory=4G"
-  - name: --db
-    type: file
-    default: /Users/toni/Dropbox/_GSK/2022/output-data/
-  - name: --db_version
-    type: integer
-    default: 0
