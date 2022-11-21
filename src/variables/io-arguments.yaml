@@ -1,0 +1,18 @@
+arguments:
+  - name: --db
+    type: file
+    default: /Users/toni/Dropbox/_GSK/2022/output-data
+  - name: --db_version
+    type: integer
+    default: 0
+  - name: --input
+    type: file
+    default: /Users/toni/Dropbox/_GSK/2022/newdata
+  - name: --cutoff
+    type: string
+    default: 2022-12-31
+  - name: --incremental
+    type: boolean_false
+  - name: --geneAnnotations
+    type: file
+    default: file:///Users/toni/data/gsk/sample/source/GSE92742_Broad_LINCS_gene_info.txt

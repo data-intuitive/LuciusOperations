@@ -14,7 +14,6 @@ par_incremental=false
 ## VIASH END
 
 tmpfile=`mktemp`
-
 cp "$par_conf" "$tmpfile"
 
 gsed -i "s#__input__#$par_input#" "$tmpfile"
@@ -22,5 +21,9 @@ gsed -i "s#__db__#$par_db#" "$tmpfile"
 gsed -i "s#__cutoff__#$par_cutoff#" "$tmpfile"
 gsed -i "s#__incremental__#$par_incremental#" "$tmpfile"
 
+echo ">> Effective config used:"
+cat $tmpfile
+
+echo ">> Run command"
 curl -s --data-binary "@${tmpfile}" \
   "${par_endpoint}/jobs?context=${par_application}&appName=${par_application}&classPath=${par_classpath}.process"
