@@ -6,12 +6,6 @@ functionality:
     - name: --conf
       type: file
       default: etc/api.conf
-    # - name: --db
-    #   type: file
-    #   default: /Users/toni/Dropbox/_GSK/2022/output-data/
-    # - name: --version
-    #   type: integer
-    #   default: 0
   resources:
     - type: bash_script
       path: script.sh
