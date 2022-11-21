@@ -1,0 +1,13 @@
+arguments:
+  - name: --base
+    type: string
+    default: https://github.com/data-intuitive/LuciusProcessing/releases/download
+  - name: --tag
+    type: string
+    default: 0.1.1
+  - name: --jar_prefix
+    type: string
+    default: LuciusProcessing-assembly
+  - name: --target
+    type: file
+    default: jars

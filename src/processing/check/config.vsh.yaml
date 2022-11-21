@@ -1,0 +1,9 @@
+functionality:
+  name: check
+  namespace: processing
+  __inherits__: ../../variables/processing-arguments.yaml
+  resources:
+    - type: bash_script
+      path: script.sh
+platforms:
+  - type: native

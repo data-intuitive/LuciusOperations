@@ -1,0 +1,9 @@
+functionality:
+  name: fetch_jar
+  namespace: processing
+  __inherits__: ../../variables/processing-jar-arguments.yaml
+  resources:
+    - type: bash_script
+      path: script.sh
+platforms:
+  - type: native
