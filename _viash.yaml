@@ -1,0 +1,10 @@
+source: src
+target: target
+
+config_mods: |
+  .functionality.version := 'dev'
+  .functionality.arguments[.name == '--db'].default := '<pointer to processed data location>'
+  .functionality.arguments[.name == '--db_version'].default := '<version>'
+  .functionality.arguments[.name == '--input'].default := '<pointer to original batches>'
+  .functionality.arguments[.name == '--cutoff'].default := '<cutoff date>'
+  .functionality.arguments[.name == '--geneAnnotations'].default := '<pointer to gene annotation file>'
