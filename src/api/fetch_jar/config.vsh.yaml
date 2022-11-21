@@ -1,7 +1,7 @@
 functionality:
   name: fetch_jar
   namespace: api
-  __inherits__: ../../variables/jar-arguments.yaml
+  __inherits__: ../../variables/api-jar-arguments.yaml
   resources:
     - type: bash_script
       path: script.sh
