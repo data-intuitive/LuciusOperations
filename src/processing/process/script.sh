@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 ## VIASH START
 par_endpoint="http://127.0.0.1:8090"
 par_classpath="com.dataintuitive.luciusprocessing"
@@ -15,10 +17,12 @@ par_incremental=false
 tmpfile=`mktemp`
 cp "$par_conf" "$tmpfile"
 
-gsed -i "s#__input__#$par_input#" "$tmpfile"
-gsed -i "s#__db__#$par_db#" "$tmpfile"
-gsed -i "s#__cutoff__#$par_cutoff#" "$tmpfile"
-gsed -i "s#__incremental__#$par_incremental#" "$tmpfile"
+my_sed="sed -i'.original'"
+
+$my_sed "s#__input__#$par_input#" "$tmpfile"
+$my_sed "s#__db__#$par_db#" "$tmpfile"
+$my_sed "s#__cutoff__#$par_cutoff#" "$tmpfile"
+$my_sed "s#__incremental__#$par_incremental#" "$tmpfile"
 
 echo ">> Effective config used:"
 cat $tmpfile

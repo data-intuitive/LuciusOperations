@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 ## VIASH START
 par_endpoint="http://127.0.0.1:8090"
 par_classpath="com.dataintuitive.luciusapi"
@@ -13,9 +15,11 @@ tmpfile=`mktemp`
 
 cp "$par_conf" "$tmpfile"
 
-gsed -i "s#__db__#$par_db#" "$tmpfile"
-gsed -i "s#__db_version__#$par_db_version#" "$tmpfile"
-gsed -i "s#__geneAnnotations__#$par_geneAnnotations#" "$tmpfile"
+my_sed="sed -i'.original'"
+
+$my_sed "s#__db__#$par_db#" "$tmpfile"
+$my_sed "s#__db_version__#$par_db_version#" "$tmpfile"
+$my_sed "s#__geneAnnotations__#$par_geneAnnotations#" "$tmpfile"
 
 echo ">> Effective config used:"
 cat $tmpfile
