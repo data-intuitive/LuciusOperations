@@ -7,7 +7,6 @@ par_conf="etc/processing.conf"
 par_db="my_test_db"
 par_db_version=10
 par_application=luciusprocessing
-par_input="/Users/toni/Dropbox/_GSK/2022/newdata"
 par_cutoff="2022-12-01"
 par_geneAnnotations=""
 par_incremental=false
