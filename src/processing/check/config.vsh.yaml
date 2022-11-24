@@ -1,7 +1,13 @@
 functionality:
   name: check
   namespace: processing
-  __inherits__: ../../variables/processing-arguments.yaml
+  __inherits__: 
+    - ../../variables/processing-arguments.yaml
+    - ../../variables/io-arguments.yaml
+  arguments:
+    - name: --conf
+      type: file
+      default: etc/processing.conf
   resources:
     - type: bash_script
       path: script.sh
