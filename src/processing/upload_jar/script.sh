@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 ## VIASH START
 # API related
 par_endpoint="http://127.0.0.1:8090"
@@ -19,4 +21,6 @@ par_options="context-factory=spark.jobserver.context.SessionContextFactory&${par
 
 TARGET="@${par_target}/${JAR}"
 
+echo
+echo "Uploading $TARGET..."
 curl -s -H 'Content-Type: application/java-archive' --data-binary "$TARGET" "${par_endpoint}/binaries/${par_application}"

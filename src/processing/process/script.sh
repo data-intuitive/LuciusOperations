@@ -23,6 +23,9 @@ $my_sed "s#__input__#$par_input#" "$tmpfile"
 $my_sed "s#__db__#$par_db#" "$tmpfile"
 $my_sed "s#__cutoff__#$par_cutoff#" "$tmpfile"
 $my_sed "s#__incremental__#$par_incremental#" "$tmpfile"
+$my_sed "s#__geneAnnotations__#$par_geneAnnotations#" "$tmpfile"
+$my_sed "s#__cellAnnotations__#$par_cellAnnotations#" "$tmpfile"
+$my_sed "s#__treatmentAnnotations__#$par_treatmentAnnotations#" "$tmpfile"
 
 echo ">> Effective config used:"
 cat $tmpfile
