@@ -7,7 +7,9 @@ arguments:
     type: string
   - name: --cutoff
     type: string
-  - name: --incremental
-    type: boolean_true
   - name: --geneAnnotations
+    type: string
+  - name: --cellAnnotations
+    type: string
+  - name: --treatmentAnnotations
     type: string
