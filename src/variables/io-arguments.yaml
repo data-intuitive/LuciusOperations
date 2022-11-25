@@ -1,13 +1,13 @@
 arguments:
   - name: --db
-    type: file
+    type: string
   - name: --db_version
     type: integer
   - name: --input
-    type: file
+    type: string
   - name: --cutoff
     type: string
   - name: --incremental
     type: boolean_true
   - name: --geneAnnotations
-    type: file
+    type: string
