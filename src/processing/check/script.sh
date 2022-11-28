@@ -9,7 +9,6 @@ par_conf="etc/processing.conf"
 par_db="my_test_db"
 par_db_version=10
 par_application=luciusprocessing
-par_cutoff="2022-12-01"
 par_geneAnnotations=""
 par_incremental=false
 ## VIASH END
@@ -21,7 +20,11 @@ my_sed="sed -i'.original'"
 
 $my_sed "s#__input__#$par_input#" "$tmpfile"
 $my_sed "s#__db__#$par_db#" "$tmpfile"
-$my_sed "s#__cutoff__#$par_cutoff#" "$tmpfile"
+if [ -z $par_processingDate ]; then
+  $my_sed "/__processingDate__/d" "$tmpfile"
+else
+  $my_sed "s#__processingDate__#$par_processingDate#" "$tmpfile"
+fi
 $my_sed "s#__incremental__#$par_incremental#" "$tmpfile"
 $my_sed "s#__geneAnnotations__#$par_geneAnnotations#" "$tmpfile"
 $my_sed "s#__cellAnnotations__#$par_cellAnnotations#" "$tmpfile"
