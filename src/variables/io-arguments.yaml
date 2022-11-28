@@ -1,15 +1,22 @@
 arguments:
   - name: --db
     type: string
+    description: The directory where the source for CMap is located.
   - name: --db_version
     type: integer
+    description: Major version of the database source to be used for initialization.
   - name: --input
     type: string
-  - name: --cutoff
+    description: The source directory with data for preprocessing. 
+  - name: --processingDate
     type: string
+    description: Process data made available (based on the file properties) before this date rather than the current date (use with care!).
   - name: --geneAnnotations
     type: string
+    description: Pointer to gene annotations.
   - name: --cellAnnotations
     type: string
+    description: Pointer to cell annotations.
   - name: --treatmentAnnotations
     type: string
+    description: Pointer to treatment annotations.

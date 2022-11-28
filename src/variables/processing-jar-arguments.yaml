@@ -2,12 +2,16 @@ arguments:
   - name: --base
     type: string
     default: https://github.com/data-intuitive/LuciusProcessing/releases/download
+    description: Base address for retrieving the JAR from github releases.
   - name: --tag
     type: string
-    default: 0.2.0
+    default: 0.2.1
+    description: The version/at to use.
   - name: --jar_prefix
     type: string
     default: LuciusProcessing-assembly
+    description: The JAR filename prefix.
   - name: --target
     type: file
     default: jars
+    description: Local cache of the JAR files.

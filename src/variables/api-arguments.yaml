@@ -1,17 +1,17 @@
 arguments:
   - name: --endpoint
     type: string
-    required: false
     default: http://localhost:8090
+    description: The endpoint (URL) to connect to 
   - name: --application
     type: string
-    required: false
     default: luciusapi
+    description: The application name, may be different for dev, test and prod.
   - name: --classpath
     type: string
-    required: false
     default: com.dataintuitive.luciusapi
+    description: The classpath, please do not update. For debugging only.
   - name: --generic_options
     type: string
-    required: false
     default: "spark.scheduler.mode=FAIR&spark.jobserver.context-creation-timeout=60&spark.memory.fraction=0.7&spark.dynamicAllocation.enabled=false&spark.executor.instances=6&spark.executor.cores=4&spark.executor.memory=4g&spark.yarn.executor.memoryOverhead=2g&spark.yarn.am.memory=4G&spark.driver.memory=4G"
+    description: Default URI parameters to be passed to the Spark cluster.
