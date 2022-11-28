@@ -1,13 +1,24 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - README.md
+    - installation.qmd
+    - usage.qmd
+    - pointers.qmd
 
 website:
-  title: "docs"
+  title: "LuciusOperations"
   navbar:
     left:
-      - href: docs/index.qmd
+      - href: README.md
         text: Home
+      - href: installation.qmd
+        text: Installation 
+      - href: usage.qmd
+        text: Usage
+      - href: pointers.qmd
+        text: Pointers
 
 format:
   html:

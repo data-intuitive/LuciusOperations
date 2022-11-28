@@ -1,6 +1,0 @@
----
-title: LuciusOperations
-subtitle: The glue that ties the Compass stack together
----
-
-
