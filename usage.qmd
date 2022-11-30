@@ -1,5 +1,245 @@
 ---
 title: Usage
+engine: knitr
 ---
 
-TODO
+## Data processing and preparation
+
+### Introduction
+
+If the LuciusWeb interface is able to calculate Zhang scores and top tables sufficiently fast, it is because the effective calculations are performed in a distributed way by Spark running on a cluster. In order for Spark to do it's parallel magic, though, it needs the data to be in a suitable format. Every lookup or join that would have to be done during execution of a query would be detremental to the overall performance. In other words, for Spark to function effectively we need to prepare the data in a format that would be called _denormalized_ in traditional database terms.
+
+What this means is that the database we work with on the level of the cluster is a (very) long list of complete records. If a specific compound appears 100 times in this database, than we store all that needs to be shown in the tables directly with _every_ record where this compound is the treatment. This approach trades in storage efficiency for processing speed.
+
+We distinguish 3 main steps in preparing the data:
+
+```{mermaid}
+flowchart LR
+  A[raw data] -- preprocessing --> B[preprocessed data per batch]
+  B -- LuciusProcessing --> C[ready for Lucius]
+```
+
+The preprocessing step takes in the raw data from the experiments and applies differential analysis, possibly replicate consolidation and other computational steps. We will not discuss the _preprocessing_ step as it is outside the scope of our work. The result of this step is written to one or more data files as CSV, TSV, Parquet or some other structured data format. Typically this preprocessed data is structured by batch of the original raw data. Additional information should be provided with it dealing with annotations for treatments, genes and samples.
+
+We pick up the data at this stage and prepare it for use with Lucius. That's what LuciusProcessing is for.
+
+## `LuciusProcessing`
+
+### Setup
+
+We first have to initialize a spark-jobserver (and consequently Spark) context in which our subsequent jobs will run. We assume the `bin/build.sh` has been run already, that leaves us with:
+
+```sh
+utils/processing/create_context
+```
+
+You should receive a response containing `SUCCESS`. If you get a timeout message, please try again.
+
+We should provide the appropriate JAR file to the jobserver as well:
+
+```sh
+utils/processing/upload_jar \
+  --jars ... \           # location of the jar file
+  --tag ...  \           # version of LuciusAPI to use
+  --...
+```
+
+Please check if those arguments are not already set correctly in the `_viash.yaml` project config file.
+
+:::{.callout-note}
+If you decide to update the defaults in `_viash.yaml`, make sure to run `bin/build.sh` again!
+:::
+
+After you issued the previous command, you should receive a response saying the JAR is uploaded.
+
+If you get something like this it means something is wrong with the JAR file:
+
+```json
+{
+  "status": "ERROR",
+  "result": "Binary is not of the right format"
+}
+```
+
+### Introduction
+
+LuciusProcessing transforms the data from preprocessed (per batch) data that is normalized to denormalized data in one or multiple 'files' per version (see later).
+
+:::{.callout-note}
+In what follows, we assume the preprocessed data is in Parquet format as well.
+:::
+
+The source should look like this:
+
+```sh
+input/<batch>_profile.parquet           # profile data (t-stats, p values, ...)
+input/<batch>_profile_meta.parquet      # profile meta data (treatment, sample data, ...)
+geneAnnotations                         # a 'file' containing gene annotations
+treatmentAnnotations                    # a 'file' containing treatment annotations
+cellAnnotations                         # a 'file' containing cell annotations
+```
+Typically, those files and directories will be on a shared filesystem or blob storage: S3 or HDFS.
+
+Each `<batch>` of data might be added on a different date because experimental data is added. The preprocessed data we consume with LuciusProcessing has two modes:
+
+1. The default mode, where _all_ data from `input/...` is fetched and processed. This results in a new major version.
+2. An _incremental_ mode, used to process _new_ data since the last processing run.
+
+### Full processing
+
+Let's take a look at the workflow to better understand what happens. We initialized a context and uploaded a JAR above, it's now time to see if our config is right and if the data is available:
+
+```
+utils/processing/check
+```
+
+Here, we assume the default arguments are correctly configured in `_viash.yaml`, if in doubt you can always run `utils/processing/check -h`.
+
+:::{.callout-remark}
+We configured the `check` request to be synchronous. That means that the `check` tool will wait for the answer to be returned. There is however a (configurable) timeout for synchronous requests, and so it may be the returned status is `status: ERROR`. Don't worry in that case, there are ways to get to the requested information. We'll discuss them later.
+:::
+
+This is the output of `check` on a limited dataset, trimmed and formatted to be better readable:
+
+```json
+{
+  "duration": "12.053 secs",
+  "classPath": "com.dataintuitive.luciusprocessing.check",
+  "startTime": "2022-11-30T13:14:01.863+01:00",
+  "context": "luciusapi",
+  "result": {
+    "info": "No data to process, please check input and parameters",
+    "header": "None",
+    "data": {
+      "inputPath": ".../",
+      "inputs": [
+        "batch1: 2022-10-25 with 162 samples stored in .../batch1_profile_meta.parquet",
+        "batch2: 2022-10-25 with 84 samples stored in .../batch2_profile_meta/ASG001_MCF7_6H_l5_profile_meta.parquet",
+        ...
+        ],
+      "filter_inputs": [
+        ...
+      ],
+      "outputs": [
+        "Version 6_0 at 2022-11-28 (.../output-data/2022-11-28_output_v6_0.parquet)",
+        "Version 1_0 at 2022-12-01 (.../output-data/2022-12-01_output_v1_0.parquet)",
+        ...
+        ]
+    }
+  },
+  "status": "FINISHED",
+  "jobId": "c6ea3c8a-dcd1-41bb-bf28-69c46e5431f7",
+  "contextId": ""
+}
+```
+
+There are 3 important lists in the output above:
+
+1. `inputs` is a list of the preprocessed batches that are available.
+2. `filter_inputs` is for running incrementally, we'll discuss that later.
+3. `outputs` is a list of already processed files.
+
+If you add `--processingDate` to the `check` tool, only data _before_ that date will be processed. By default it is the current date of processing, but in certain situations it might be useful to be able to set it explicitly. For instance, if you want to process the a large number of batches in pieces based on the date at which they were added. Or just when preparing a test dataset. But in general, it should not be used.
+
+If you specify the `--processingDate`, the `filter_inputs` list will contain the entries that _match_ the query.
+
+When the output of the `check` tool yields the expected result, it's time to start processinsg the data. If processed data is available in the `outputs` list, the major version will automatically be updated when a full processing run is started. For example, if the latest output dataset is version 3.x, the next full processing run will get version 4.
+
+The dates and versions are only encoded in the filenames of the Parquet files for convenience. The dates and version that are effectively used are encoded inside thte files. So even if we rename files or move them, we are able to retrieve that information.
+
+It's now time to start the effective processing job:
+
+```sh
+utils/processing/process
+```
+
+Again, this just works if the `_viash.yaml` config file has been properly provisioned or configured.
+
+The `process` tool does not wait for the result and runs in the background. One can either connect to the jobserver console or via the CLI (see later).
+
+### Incremental processing runs
+
+The process for incremental runs is the same as for full runs, the difference is in the selection of data that is used for processing: an incremental run looks at the last major version in the `output` location, and for that version the last minor version. It then checks at what date that data was processed. If there is input data that is _newer_ than the last processed data, it will be processed and the minor version will be bumped.
+
+Running the processing is as easy as before by adding `--incremental`:
+
+```sh
+utils/processing/process --incremental
+```
+
+Remember that the `filtered_inputs` will contain the entries in the input that would be processed when running incrementally.
+
+## Troubleshooting
+
+### Getting job output when the request times out
+
+Sometimes, the following message or something similar can be returned:
+
+```json
+{
+  "status": "ERROR",
+  "result": {
+    "message": "Ask timed out on [Actor[akka://JobServer/user/context-supervisor/luciusapi#-1556520586]] after [10000 ms]. Sender[null] sent message of type \"spark.jobserver.JobManagerActor$StartJob\".",
+    "errorClass": "akka.pattern.AskTimeoutException",
+    "stack": "akka.pattern.AskTimeoutException: Ask timed out on [Actor[akka://JobServer/user/context-supervisor/luciusapi#-1556520586]] after [10000 ms]. Sender[null] sent message of type \"spark.jobserver.JobManagerActor$StartJob\".\n\tat akka.pattern.PromiseActorRef$$anonfun$1.apply$mcV$sp(AskSupport.scala:604)\n\tat akka.actor.Scheduler$$anon$4.run(Scheduler.scala:126)\n\tat scala.concurrent.Future$InternalCallbackExecutor$.unbatchedExecute(Future.scala:601)\n\tat scala.concurrent.BatchingExecutor$class.execute(BatchingExecutor.scala:109)\n\tat scala.concurrent.Future$InternalCallbackExecutor$.execute(Future.scala:599)\n\tat akka.actor.LightArrayRevolverScheduler$TaskHolder.executeTask(LightArrayRevolverScheduler.scala:329)\n\tat akka.actor.LightArrayRevolverScheduler$$anon$4.executeBucket$1(LightArrayRevolverScheduler.scala:280)\n\tat akka.actor.LightArrayRevolverScheduler$$anon$4.nextTick(LightArrayRevolverScheduler.scala:284)\n\tat akka.actor.LightArrayRevolverScheduler$$anon$4.run(LightArrayRevolverScheduler.scala:236)\n\tat java.lang.Thread.run(Thread.java:750)\n"
+  }
+}
+```
+
+It means the synchronous job timed out. It does not mean the job is not running or was stopped. In order to know what happened to the job, one can use either the CLI or the spark-jobserver console.
+
+#### Using Spark-Jobserver to get information about jobs
+
+Connect to the URL of the spark-jobserver instance in your environment. If you don't know what that is, but you're LuciusOperations toolbox has been configured correctly, you can retrieve that information from the output of `utils/processing/check -h`. The first argument in the help message is `--endpoint` and the default value for it is the URL you need:
+
+```{sh}
+utils/processing/check -h | head -8
+```
+
+Open a browser tab and connect to this URL, you should see a screen similar to the one below.
+
+![Spark Jobserver console](img/spark-jobserver.png)
+
+There are three tabs here:
+
+- Jobs: to retrieve a list of recently run jobs split in 3 'states': Running, Completed and Failed.
+- Contexts: to retrieve a list of contexts that are services from this jobserver instance. This should correspond to the context created using `utils/processing/create_context`.
+- Binaries: this tab lists the JAR files that have been uploaded using `utils/processing/upload_jar`.
+
+Clicking on the the job link in the Jobs tab, you get the JSON result of the job. The `(C)` link retrieves the configuration that was used for this job.
+
+If you know the job number, you could alternatively open the job page directly:
+
+```
+<endpoint>/jobs/<jobID>
+```
+
+#### Using the CLI to get information about jobs
+
+From the CLI, the approach is different. The main difference is that we first have to retrieve the list of jobs but can not simply click on the last job in the list.
+
+Alternative, with the use of jq and optionally HTTPie, this can be simplified:
+
+```sh
+http localhost:8090/jobs | jq 'first'
+```
+
+The `http` command in this example can be replaced by `curl`. If `jq` is not installed on your system, a simple `|head` may suffice to get the job id of the last job.
+
+By copy/pasting the job id, we can request the result of one specific job.
+
+```sh
+http localhost:/8090/jobs/<jobId>
+```
+
+The following is a one-liner based on HTTPie and jq:
+
+```sh
+http localhost:8090/jobs | jq 'first' | jq -r '.jobId' | xargs -I{} http localhost:8090/jobs/{}
+```
+
+:::{.callout-note}
+A tool in the LuciusOperations toolbox will be created in the near future, allowing to query the jobs easily and retrieve the result for the last job.
+:::
+
+

@@ -20,6 +20,69 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -58,6 +121,9 @@ ul.task-list li input[type="checkbox"] {
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 </head>
@@ -105,7 +171,27 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#data-processing-and-preparation" id="toc-data-processing-and-preparation" class="nav-link active" data-scroll-target="#data-processing-and-preparation">Data processing and preparation</a>
+  <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  </ul></li>
+  <li><a href="#luciusprocessing" id="toc-luciusprocessing" class="nav-link" data-scroll-target="#luciusprocessing"><code>LuciusProcessing</code></a>
+  <ul class="collapse">
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#introduction-1" id="toc-introduction-1" class="nav-link" data-scroll-target="#introduction-1">Introduction</a></li>
+  <li><a href="#full-processing" id="toc-full-processing" class="nav-link" data-scroll-target="#full-processing">Full processing</a></li>
+  <li><a href="#incremental-processing-runs" id="toc-incremental-processing-runs" class="nav-link" data-scroll-target="#incremental-processing-runs">Incremental processing runs</a></li>
+  </ul></li>
+  <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a>
+  <ul class="collapse">
+  <li><a href="#getting-job-output-when-the-request-times-out" id="toc-getting-job-output-when-the-request-times-out" class="nav-link" data-scroll-target="#getting-job-output-when-the-request-times-out">Getting job output when the request times out</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -127,9 +213,239 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>TODO</p>
+<section id="data-processing-and-preparation" class="level2">
+<h2 class="anchored" data-anchor-id="data-processing-and-preparation">Data processing and preparation</h2>
+<section id="introduction" class="level3">
+<h3 class="anchored" data-anchor-id="introduction">Introduction</h3>
+<p>If the LuciusWeb interface is able to calculate Zhang scores and top tables sufficiently fast, it is because the effective calculations are performed in a distributed way by Spark running on a cluster. In order for Spark to do it’s parallel magic, though, it needs the data to be in a suitable format. Every lookup or join that would have to be done during execution of a query would be detremental to the overall performance. In other words, for Spark to function effectively we need to prepare the data in a format that would be called <em>denormalized</em> in traditional database terms.</p>
+<p>What this means is that the database we work with on the level of the cluster is a (very) long list of complete records. If a specific compound appears 100 times in this database, than we store all that needs to be shown in the tables directly with <em>every</em> record where this compound is the treatment. This approach trades in storage efficiency for processing speed.</p>
+<p>We distinguish 3 main steps in preparing the data:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<p>
+</p><pre class="mermaid mermaid-js" data-tooltip-selector="#mermaid-tooltip-1">flowchart LR
+  A[raw data] -- preprocessing --&gt; B[preprocessed data per batch]
+  B -- LuciusProcessing --&gt; C[ready for Lucius]
+</pre>
+<div id="mermaid-tooltip-1" class="mermaidTooltip">
+
+</div>
+<p></p>
+</div>
+</div>
+</div>
+<p>The preprocessing step takes in the raw data from the experiments and applies differential analysis, possibly replicate consolidation and other computational steps. We will not discuss the <em>preprocessing</em> step as it is outside the scope of our work. The result of this step is written to one or more data files as CSV, TSV, Parquet or some other structured data format. Typically this preprocessed data is structured by batch of the original raw data. Additional information should be provided with it dealing with annotations for treatments, genes and samples.</p>
+<p>We pick up the data at this stage and prepare it for use with Lucius. That’s what LuciusProcessing is for.</p>
+</section>
+</section>
+<section id="luciusprocessing" class="level2">
+<h2 class="anchored" data-anchor-id="luciusprocessing"><code>LuciusProcessing</code></h2>
+<section id="setup" class="level3">
+<h3 class="anchored" data-anchor-id="setup">Setup</h3>
+<p>We first have to initialize a spark-jobserver (and consequently Spark) context in which our subsequent jobs will run. We assume the <code>bin/build.sh</code> has been run already, that leaves us with:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">utils/processing/create_context</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You should receive a response containing <code>SUCCESS</code>. If you get a timeout message, please try again.</p>
+<p>We should provide the appropriate JAR file to the jobserver as well:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">utils/processing/upload_jar</span> <span class="dt">\</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--jars</span> ... <span class="dt">\ </span>          <span class="co"># location of the jar file</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--tag</span> ...  <span class="dt">\ </span>          <span class="co"># version of LuciusAPI to use</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Please check if those arguments are not already set correctly in the <code>_viash.yaml</code> project config file.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you decide to update the defaults in <code>_viash.yaml</code>, make sure to run <code>bin/build.sh</code> again!</p>
+</div>
+</div>
+<p>After you issued the previous command, you should receive a response saying the JAR is uploaded.</p>
+<p>If you get something like this it means something is wrong with the JAR file:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"status"</span><span class="fu">:</span> <span class="st">"ERROR"</span><span class="fu">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"result"</span><span class="fu">:</span> <span class="st">"Binary is not of the right format"</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="introduction-1" class="level3">
+<h3 class="anchored" data-anchor-id="introduction-1">Introduction</h3>
+<p>LuciusProcessing transforms the data from preprocessed (per batch) data that is normalized to denormalized data in one or multiple ‘files’ per version (see later).</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In what follows, we assume the preprocessed data is in Parquet format as well.</p>
+</div>
+</div>
+<p>The source should look like this:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">input/</span><span class="op">&lt;</span>batch<span class="op">&gt;</span>_profile.parquet           <span class="co"># profile data (t-stats, p values, ...)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">input/</span><span class="op">&lt;</span>batch<span class="op">&gt;</span>_profile_meta.parquet      <span class="co"># profile meta data (treatment, sample data, ...)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">geneAnnotations</span>                         <span class="co"># a 'file' containing gene annotations</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">treatmentAnnotations</span>                    <span class="co"># a 'file' containing treatment annotations</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">cellAnnotations</span>                         <span class="co"># a 'file' containing cell annotations</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Typically, those files and directories will be on a shared filesystem or blob storage: S3 or HDFS.</p>
+<p>Each <code>&lt;batch&gt;</code> of data might be added on a different date because experimental data is added. The preprocessed data we consume with LuciusProcessing has two modes:</p>
+<ol type="1">
+<li>The default mode, where <em>all</em> data from <code>input/...</code> is fetched and processed. This results in a new major version.</li>
+<li>An <em>incremental</em> mode, used to process <em>new</em> data since the last processing run.</li>
+</ol>
+</section>
+<section id="full-processing" class="level3">
+<h3 class="anchored" data-anchor-id="full-processing">Full processing</h3>
+<p>Let’s take a look at the workflow to better understand what happens. We initialized a context and uploaded a JAR above, it’s now time to see if our config is right and if the data is available:</p>
+<pre><code>utils/processing/check</code></pre>
+<p>Here, we assume the default arguments are correctly configured in <code>_viash.yaml</code>, if in doubt you can always run <code>utils/processing/check -h</code>.</p>
+<div class="callout-remark callout callout-style-default no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Remark
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We configured the <code>check</code> request to be synchronous. That means that the <code>check</code> tool will wait for the answer to be returned. There is however a (configurable) timeout for synchronous requests, and so it may be the returned status is <code>status: ERROR</code>. Don’t worry in that case, there are ways to get to the requested information. We’ll discuss them later.</p>
+</div>
+</div>
+<p>This is the output of <code>check</code> on a limited dataset, trimmed and formatted to be better readable:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"duration"</span><span class="fu">:</span> <span class="st">"12.053 secs"</span><span class="fu">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"classPath"</span><span class="fu">:</span> <span class="st">"com.dataintuitive.luciusprocessing.check"</span><span class="fu">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"startTime"</span><span class="fu">:</span> <span class="st">"2022-11-30T13:14:01.863+01:00"</span><span class="fu">,</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"context"</span><span class="fu">:</span> <span class="st">"luciusapi"</span><span class="fu">,</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"result"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"info"</span><span class="fu">:</span> <span class="st">"No data to process, please check input and parameters"</span><span class="fu">,</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"header"</span><span class="fu">:</span> <span class="st">"None"</span><span class="fu">,</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"data"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"inputPath"</span><span class="fu">:</span> <span class="st">".../"</span><span class="fu">,</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"inputs"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"batch1: 2022-10-25 with 162 samples stored in .../batch1_profile_meta.parquet"</span><span class="ot">,</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"batch2: 2022-10-25 with 84 samples stored in .../batch2_profile_meta/ASG001_MCF7_6H_l5_profile_meta.parquet"</span><span class="ot">,</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="er">...</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"filter_inputs"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        <span class="er">...</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"outputs"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Version 6_0 at 2022-11-28 (.../output-data/2022-11-28_output_v6_0.parquet)"</span><span class="ot">,</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Version 1_0 at 2022-12-01 (.../output-data/2022-12-01_output_v1_0.parquet)"</span><span class="ot">,</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="er">...</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        <span class="ot">]</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"status"</span><span class="fu">:</span> <span class="st">"FINISHED"</span><span class="fu">,</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"jobId"</span><span class="fu">:</span> <span class="st">"c6ea3c8a-dcd1-41bb-bf28-69c46e5431f7"</span><span class="fu">,</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"contextId"</span><span class="fu">:</span> <span class="st">""</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>There are 3 important lists in the output above:</p>
+<ol type="1">
+<li><code>inputs</code> is a list of the preprocessed batches that are available.</li>
+<li><code>filter_inputs</code> is for running incrementally, we’ll discuss that later.</li>
+<li><code>outputs</code> is a list of already processed files.</li>
+</ol>
+<p>If you add <code>--processingDate</code> to the <code>check</code> tool, only data <em>before</em> that date will be processed. By default it is the current date of processing, but in certain situations it might be useful to be able to set it explicitly. For instance, if you want to process the a large number of batches in pieces based on the date at which they were added. Or just when preparing a test dataset. But in general, it should not be used.</p>
+<p>If you specify the <code>--processingDate</code>, the <code>filter_inputs</code> list will contain the entries that <em>match</em> the query.</p>
+<p>When the output of the <code>check</code> tool yields the expected result, it’s time to start processinsg the data. If processed data is available in the <code>outputs</code> list, the major version will automatically be updated when a full processing run is started. For example, if the latest output dataset is version 3.x, the next full processing run will get version 4.</p>
+<p>The dates and versions are only encoded in the filenames of the Parquet files for convenience. The dates and version that are effectively used are encoded inside thte files. So even if we rename files or move them, we are able to retrieve that information.</p>
+<p>It’s now time to start the effective processing job:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">utils/processing/process</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Again, this just works if the <code>_viash.yaml</code> config file has been properly provisioned or configured.</p>
+<p>The <code>process</code> tool does not wait for the result and runs in the background. One can either connect to the jobserver console or via the CLI (see later).</p>
+</section>
+<section id="incremental-processing-runs" class="level3">
+<h3 class="anchored" data-anchor-id="incremental-processing-runs">Incremental processing runs</h3>
+<p>The process for incremental runs is the same as for full runs, the difference is in the selection of data that is used for processing: an incremental run looks at the last major version in the <code>output</code> location, and for that version the last minor version. It then checks at what date that data was processed. If there is input data that is <em>newer</em> than the last processed data, it will be processed and the minor version will be bumped.</p>
+<p>Running the processing is as easy as before by adding <code>--incremental</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">utils/processing/process</span> <span class="at">--incremental</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Remember that the <code>filtered_inputs</code> will contain the entries in the input that would be processed when running incrementally.</p>
+</section>
+</section>
+<section id="troubleshooting" class="level2">
+<h2 class="anchored" data-anchor-id="troubleshooting">Troubleshooting</h2>
+<section id="getting-job-output-when-the-request-times-out" class="level3">
+<h3 class="anchored" data-anchor-id="getting-job-output-when-the-request-times-out">Getting job output when the request times out</h3>
+<p>Sometimes, the following message or something similar can be returned:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"status"</span><span class="fu">:</span> <span class="st">"ERROR"</span><span class="fu">,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"result"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"message"</span><span class="fu">:</span> <span class="st">"Ask timed out on [Actor[akka://JobServer/user/context-supervisor/luciusapi#-1556520586]] after [10000 ms]. Sender[null] sent message of type </span><span class="ch">\"</span><span class="st">spark.jobserver.JobManagerActor$StartJob</span><span class="ch">\"</span><span class="st">."</span><span class="fu">,</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"errorClass"</span><span class="fu">:</span> <span class="st">"akka.pattern.AskTimeoutException"</span><span class="fu">,</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"stack"</span><span class="fu">:</span> <span class="st">"akka.pattern.AskTimeoutException: Ask timed out on [Actor[akka://JobServer/user/context-supervisor/luciusapi#-1556520586]] after [10000 ms]. Sender[null] sent message of type </span><span class="ch">\"</span><span class="st">spark.jobserver.JobManagerActor$StartJob</span><span class="ch">\"</span><span class="st">.</span><span class="ch">\n\t</span><span class="st">at akka.pattern.PromiseActorRef$$anonfun$1.apply$mcV$sp(AskSupport.scala:604)</span><span class="ch">\n\t</span><span class="st">at akka.actor.Scheduler$$anon$4.run(Scheduler.scala:126)</span><span class="ch">\n\t</span><span class="st">at scala.concurrent.Future$InternalCallbackExecutor$.unbatchedExecute(Future.scala:601)</span><span class="ch">\n\t</span><span class="st">at scala.concurrent.BatchingExecutor$class.execute(BatchingExecutor.scala:109)</span><span class="ch">\n\t</span><span class="st">at scala.concurrent.Future$InternalCallbackExecutor$.execute(Future.scala:599)</span><span class="ch">\n\t</span><span class="st">at akka.actor.LightArrayRevolverScheduler$TaskHolder.executeTask(LightArrayRevolverScheduler.scala:329)</span><span class="ch">\n\t</span><span class="st">at akka.actor.LightArrayRevolverScheduler$$anon$4.executeBucket$1(LightArrayRevolverScheduler.scala:280)</span><span class="ch">\n\t</span><span class="st">at akka.actor.LightArrayRevolverScheduler$$anon$4.nextTick(LightArrayRevolverScheduler.scala:284)</span><span class="ch">\n\t</span><span class="st">at akka.actor.LightArrayRevolverScheduler$$anon$4.run(LightArrayRevolverScheduler.scala:236)</span><span class="ch">\n\t</span><span class="st">at java.lang.Thread.run(Thread.java:750)</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>It means the synchronous job timed out. It does not mean the job is not running or was stopped. In order to know what happened to the job, one can use either the CLI or the spark-jobserver console.</p>
+<section id="using-spark-jobserver-to-get-information-about-jobs" class="level4">
+<h4 class="anchored" data-anchor-id="using-spark-jobserver-to-get-information-about-jobs">Using Spark-Jobserver to get information about jobs</h4>
+<p>Connect to the URL of the spark-jobserver instance in your environment. If you don’t know what that is, but you’re LuciusOperations toolbox has been configured correctly, you can retrieve that information from the output of <code>utils/processing/check -h</code>. The first argument in the help message is <code>--endpoint</code> and the default value for it is the URL you need:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">utils/processing/check</span> <span class="at">-h</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-8</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>check dev
+
+Arguments:
+    --endpoint
+        type: string
+        default: http://localhost:8090
+        The endpoint (URL) to connect to</code></pre>
+</div>
+</div>
+<p>Open a browser tab and connect to this URL, you should see a screen similar to the one below.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/spark-jobserver.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Spark Jobserver console</figcaption><p></p>
+</figure>
+</div>
+<p>There are three tabs here:</p>
+<ul>
+<li>Jobs: to retrieve a list of recently run jobs split in 3 ‘states’: Running, Completed and Failed.</li>
+<li>Contexts: to retrieve a list of contexts that are services from this jobserver instance. This should correspond to the context created using <code>utils/processing/create_context</code>.</li>
+<li>Binaries: this tab lists the JAR files that have been uploaded using <code>utils/processing/upload_jar</code>.</li>
+</ul>
+<p>Clicking on the the job link in the Jobs tab, you get the JSON result of the job. The <code>(C)</code> link retrieves the configuration that was used for this job.</p>
+<p>If you know the job number, you could alternatively open the job page directly:</p>
+<pre><code>&lt;endpoint&gt;/jobs/&lt;jobID&gt;</code></pre>
+</section>
+<section id="using-the-cli-to-get-information-about-jobs" class="level4">
+<h4 class="anchored" data-anchor-id="using-the-cli-to-get-information-about-jobs">Using the CLI to get information about jobs</h4>
+<p>From the CLI, the approach is different. The main difference is that we first have to retrieve the list of jobs but can not simply click on the last job in the list.</p>
+<p>Alternative, with the use of jq and optionally HTTPie, this can be simplified:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">http</span> localhost:8090/jobs <span class="kw">|</span> <span class="ex">jq</span> <span class="st">'first'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <code>http</code> command in this example can be replaced by <code>curl</code>. If <code>jq</code> is not installed on your system, a simple <code>|head</code> may suffice to get the job id of the last job.</p>
+<p>By copy/pasting the job id, we can request the result of one specific job.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">http</span> localhost:/8090/jobs/<span class="op">&lt;</span>jobId<span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The following is a one-liner based on HTTPie and jq:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">http</span> localhost:8090/jobs <span class="kw">|</span> <span class="ex">jq</span> <span class="st">'first'</span> <span class="kw">|</span> <span class="ex">jq</span> <span class="at">-r</span> <span class="st">'.jobId'</span> <span class="kw">|</span> <span class="fu">xargs</span> <span class="at">-I{}</span> http localhost:8090/jobs/{}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A tool in the LuciusOperations toolbox will be created in the near future, allowing to query the jobs easily and retrieve the result for the last job.</p>
+</div>
+</div>
 
 
+</section>
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

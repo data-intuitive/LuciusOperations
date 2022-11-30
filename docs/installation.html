@@ -20,6 +20,69 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -105,7 +168,14 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#technical-details" id="toc-technical-details" class="nav-link" data-scroll-target="#technical-details">Technical details</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -127,9 +197,122 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>TODO</p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>LuciusOperations uses <a href="https://viash.io">Viash</a> to convert relatively simple scripts containing REST calls into configurable CLI tools.</p>
+<p>The use of Viash and other applications of the tool is outside the scope of this document. Suffice to note that Viash uses a concept of <em>source</em> and what is built from that source. The source of the components can be found under <code>src/</code>, using the <code>bin/build.sh</code> wrapper script, the built scripts are under <code>utils/</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bin/build.sh</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+&gt;&gt; Building both namespaces
+[31mReading file '/Users/toni/code/compass/LuciusOperations/src/processing/check/config.vsh.yaml' failed[0m
+[31mReading file '/Users/toni/code/compass/LuciusOperations/src/processing/process/config.vsh.yaml' failed[0m
+[31mReading file '/Users/toni/code/compass/LuciusOperations/src/api/initialize/config.vsh.yaml' failed[0m
+Exporting create_context (processing) =native=&gt; utils/processing
+Exporting upload_jar (processing) =native=&gt; utils/processing
+Exporting remove_context (processing) =native=&gt; utils/processing
+Exporting fetch_jar (processing) =native=&gt; utils/processing
+[33mNot all configs built successfully[0m
+  [31m3/12 configs encountered parse errors[0m
+  [33m5/12 configs were disabled[0m
+  [32m4/12 configs built successfully[0m
+[31mReading file '/Users/toni/code/compass/LuciusOperations/src/processing/check/config.vsh.yaml' failed[0m
+[31mReading file '/Users/toni/code/compass/LuciusOperations/src/processing/process/config.vsh.yaml' failed[0m
+[31mReading file '/Users/toni/code/compass/LuciusOperations/src/api/initialize/config.vsh.yaml' failed[0m
+Exporting create_context (api) =native=&gt; utils/api
+Exporting upload_jar (api) =native=&gt; utils/api
+Exporting remove_context (api) =native=&gt; utils/api
+Exporting fetch_jar (api) =native=&gt; utils/api
+Exporting check (api) =native=&gt; utils/api
+[33mNot all configs built successfully[0m
+  [31m3/12 configs encountered parse errors[0m
+  [33m4/12 configs were disabled[0m
+  [32m5/12 configs built successfully[0m
+
+&gt;&gt; Please see under utils/ to find the tools for api and processing...</code></pre>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This description deals with the installation and configuration of LuciusOperations only.</p>
+</div>
+</div>
+</section>
+<section id="technical-details" class="level2">
+<h2 class="anchored" data-anchor-id="technical-details">Technical details</h2>
+<p>Every Viash component contains a <code>script.sh</code> file (usually some parameter handling and a command to execute) and a <code>config.vsh.yaml</code> file which contains the configuration for the component.</p>
+<p>By running <code>bin/build.sh</code>, this combination of files is transformed into 1 executable script that performs essentially two things:</p>
+<ol type="1">
+<li>The resulting executable contains the argument parsing necessary to run it from the CLI</li>
+<li>The defaults configured in <code>_viash.yaml</code> are applied.</li>
+</ol>
+<p>An illustration of the CLI argument parsing capabilities:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">utils/processing/check</span> <span class="at">-h</span> <span class="kw">|</span> <span class="fu">head</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>check dev
+
+Arguments:
+    --endpoint
+        type: string
+        default: http://localhost:8090
+        The endpoint (URL) to connect to
+
+    --application
+        type: string</code></pre>
+</div>
+</div>
+<p>The format of the configuration in <code>_viash.yaml</code> is derived from the way <a href="https://stedolan.github.io/jq/">jq</a> allows to query and update JSON blobs. It should be clear from the example in the repository how to use it:</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span><span class="kw">:</span><span class="at"> src</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">target</span><span class="kw">:</span><span class="at"> target</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">config_mods</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  .functionality.version := 'dev'</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--application'].default := 'luciusprocessing-dev'</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--db'].default := '&lt;pointer to processed data location&gt;'</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--db_version'].default := '&lt;version&gt;'</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--input'].default := '&lt;pointer to original batches&gt;'</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--geneAnnotations'].default := '&lt;pointer to gene annotation file&gt;'</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--treatmentAnnotations'].default := '&lt;pointer to treatment annotation file&gt;'</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--cellAnnotations'].default := '&lt;pointer to cell annotation file&gt;'</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <code>bin/build.sh</code> script uses Viash to create 2 subdirectories under <code>utils/</code> containing tools that are used for the <em>processing</em> part and for the <em>api</em> part:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tree</span> utils/</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>utils/
+├── api
+│&nbsp;&nbsp; ├── check
+│&nbsp;&nbsp; ├── create_context
+│&nbsp;&nbsp; ├── fetch_jar
+│&nbsp;&nbsp; ├── initialize
+│&nbsp;&nbsp; ├── remove_context
+│&nbsp;&nbsp; └── upload_jar
+└── processing
+    ├── check
+    ├── create_context
+    ├── fetch_jar
+    ├── process
+    ├── remove_context
+    └── upload_jar
+
+2 directories, 12 files</code></pre>
+</div>
+</div>
+<p>Please refer to the <a href="usage.html">usage</a> guide for more information about how to use the tools under <code>utils/</code>.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

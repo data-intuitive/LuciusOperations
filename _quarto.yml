@@ -3,8 +3,8 @@ project:
   output-dir: docs
   render:
     - README.md
-    - installation.qmd
     - usage.qmd
+    - installation.qmd
     - pointers.qmd
 
 website:
@@ -24,3 +24,6 @@ format:
   html:
     theme: flatly
     toc: true
+
+execute:
+  freeze: auto  # re-render only when source changes

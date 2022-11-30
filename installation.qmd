@@ -1,5 +1,46 @@
 ---
 title: Installation Instructions
+engine: knitr
 ---
 
-TODO
+## Introduction
+
+LuciusOperations uses [Viash](https://viash.io) to convert relatively simple scripts containing REST calls into configurable CLI tools.
+
+The use of Viash and other applications of the tool is outside the scope of this document. Suffice to note that Viash uses a concept of _source_ and what is built from that source. The source of the components can be found under `src/`, using the `bin/build.sh` wrapper script, the built scripts are under `utils/`.
+
+```{sh}
+bin/build.sh
+```
+
+::: {.callout-note}
+This description deals with the installation and configuration of LuciusOperations only.
+:::
+
+## Technical details
+
+Every Viash component contains a `script.sh` file (usually some parameter handling and a command to execute) and a `config.vsh.yaml` file which contains the configuration for the component.
+
+By running `bin/build.sh`, this combination of files is transformed into 1 executable script that performs essentially two things:
+
+1. The resulting executable contains the argument parsing necessary to run it from the CLI
+2. The defaults configured in `_viash.yaml` are applied.
+
+An illustration of the CLI argument parsing capabilities:
+
+```{sh}
+utils/processing/check -h | head
+```
+The format of the configuration in `_viash.yaml` is derived from the way [jq](https://stedolan.github.io/jq/) allows to query and update JSON blobs. It should be clear from the example in the repository how to use it:
+
+```{embed lang="yaml"}
+_viash.yaml
+```
+
+The `bin/build.sh` script uses Viash to create 2 subdirectories under `utils/` containing tools that are used for the _processing_ part and for the _api_ part:
+
+```{sh}
+tree utils/
+```
+
+Please refer to the [usage](usage.html) guide for more information about how to use the tools under `utils/`.
