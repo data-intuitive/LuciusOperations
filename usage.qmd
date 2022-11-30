@@ -169,77 +169,72 @@ utils/processing/process --incremental
 
 Remember that the `filtered_inputs` will contain the entries in the input that would be processed when running incrementally.
 
-## Troubleshooting
-
-### Getting job output when the request times out
-
-Sometimes, the following message or something similar can be returned:
-
-```json
-{
-  "status": "ERROR",
-  "result": {
-    "message": "Ask timed out on [Actor[akka://JobServer/user/context-supervisor/luciusapi#-1556520586]] after [10000 ms]. Sender[null] sent message of type \"spark.jobserver.JobManagerActor$StartJob\".",
-    "errorClass": "akka.pattern.AskTimeoutException",
-    "stack": "akka.pattern.AskTimeoutException: Ask timed out on [Actor[akka://JobServer/user/context-supervisor/luciusapi#-1556520586]] after [10000 ms]. Sender[null] sent message of type \"spark.jobserver.JobManagerActor$StartJob\".\n\tat akka.pattern.PromiseActorRef$$anonfun$1.apply$mcV$sp(AskSupport.scala:604)\n\tat akka.actor.Scheduler$$anon$4.run(Scheduler.scala:126)\n\tat scala.concurrent.Future$InternalCallbackExecutor$.unbatchedExecute(Future.scala:601)\n\tat scala.concurrent.BatchingExecutor$class.execute(BatchingExecutor.scala:109)\n\tat scala.concurrent.Future$InternalCallbackExecutor$.execute(Future.scala:599)\n\tat akka.actor.LightArrayRevolverScheduler$TaskHolder.executeTask(LightArrayRevolverScheduler.scala:329)\n\tat akka.actor.LightArrayRevolverScheduler$$anon$4.executeBucket$1(LightArrayRevolverScheduler.scala:280)\n\tat akka.actor.LightArrayRevolverScheduler$$anon$4.nextTick(LightArrayRevolverScheduler.scala:284)\n\tat akka.actor.LightArrayRevolverScheduler$$anon$4.run(LightArrayRevolverScheduler.scala:236)\n\tat java.lang.Thread.run(Thread.java:750)\n"
-  }
-}
-```
-
-It means the synchronous job timed out. It does not mean the job is not running or was stopped. In order to know what happened to the job, one can use either the CLI or the spark-jobserver console.
-
-#### Using Spark-Jobserver to get information about jobs
-
-Connect to the URL of the spark-jobserver instance in your environment. If you don't know what that is, but you're LuciusOperations toolbox has been configured correctly, you can retrieve that information from the output of `utils/processing/check -h`. The first argument in the help message is `--endpoint` and the default value for it is the URL you need:
-
-```{sh}
-utils/processing/check -h | head -8
-```
-
-Open a browser tab and connect to this URL, you should see a screen similar to the one below.
-
-![Spark Jobserver console](img/spark-jobserver.png)
-
-There are three tabs here:
-
-- Jobs: to retrieve a list of recently run jobs split in 3 'states': Running, Completed and Failed.
-- Contexts: to retrieve a list of contexts that are services from this jobserver instance. This should correspond to the context created using `utils/processing/create_context`.
-- Binaries: this tab lists the JAR files that have been uploaded using `utils/processing/upload_jar`.
-
-Clicking on the the job link in the Jobs tab, you get the JSON result of the job. The `(C)` link retrieves the configuration that was used for this job.
-
-If you know the job number, you could alternatively open the job page directly:
-
-```
-<endpoint>/jobs/<jobID>
-```
-
-#### Using the CLI to get information about jobs
-
-From the CLI, the approach is different. The main difference is that we first have to retrieve the list of jobs but can not simply click on the last job in the list.
-
-Alternative, with the use of jq and optionally HTTPie, this can be simplified:
+In order to cleanup, it's good practice to remove the context after we ran the processing:
 
 ```sh
-http localhost:8090/jobs | jq 'first'
+utils/processing/remove_context
 ```
 
-The `http` command in this example can be replaced by `curl`. If `jq` is not installed on your system, a simple `|head` may suffice to get the job id of the last job.
+## `LuciusAPI`
 
-By copy/pasting the job id, we can request the result of one specific job.
+Once there data is processed for use with Lucius, it's a matter of initializing the long-running context. This is similar to what we did above:
 
 ```sh
-http localhost:/8090/jobs/<jobId>
+utils/api/create_context
+utils/api/upload_jar
+utils/api/initialize
 ```
 
-The following is a one-liner based on HTTPie and jq:
+At this point, the data will be loaded and cached in memory on the Spark cluster. The caching is important for performance. You can check the status of the initialization job using the jobserver console or the CLI (see below under Troubleshooting).
+
+When the `initialization` job has finished, a check can be performed:
 
 ```sh
-http localhost:8090/jobs | jq 'first' | jq -r '.jobId' | xargs -I{} http localhost:8090/jobs/{}
+utils/api/check
 ```
 
-:::{.callout-note}
-A tool in the LuciusOperations toolbox will be created in the near future, allowing to query the jobs easily and retrieve the result for the last job.
+You'll get some basic statistics about what is available in the dataset. If this works, there's a high chance that the frontend will work!
+
+:::{.callout-warning}
+Do not remove the context unless you really intend to do that: removing the context will stop the application from working.
 :::
 
+## Customizations
 
+
+## Processed data versions
+
+As noted above, processed data is stored with a major/minor versioning scheme: major versions for full processing runs, minor versions for incremental runs. Each new full run generates a new major version and consequently the `utils/api/initialization` tool should pick out the correct one to initialize the context.
+
+The default is set to 0, but one will often require different versions. One approach is to update the `_viash.yaml` file and encode the proper default there.
+
+Another approach is to simply uses the arguments to modify the behavior of the `initialize` tool:
+
+```sh
+utils/api/initialize --db_version 2
+```
+
+Please note that we only select a major version because all minor versions are incremental runs on top of version 2.0.
+
+### Other customizations
+
+It's possible to edit the `_viash.yaml` file and run `bin/build.sh` again in order to create the `utils/` toolbox with new defaults. It's also possible to use the arguments available, just be sure to use them consistenly.
+
+For instance:
+
+```sh
+bin/processing/create_context \
+  --application my_app_name       # specify a different name
+bin/processing/upload_jar \
+  --tag 0.2.0                     # select an older version
+bin/processing/check \
+  --application my_app_name       # use the same app name as before
+bin/api/initialize \
+  --db $different_path \          # point to different database location
+  --db_version 1  \               # point to different database version
+  --application my_app_name
+```
+
+As always, simply call the appropriate tool from the toolbox with `-h` or `--help`.
+
+In principle, we could create scripts (or even workflows?) based on these steps.
