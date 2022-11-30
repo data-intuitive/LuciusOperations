@@ -186,10 +186,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#full-processing" id="toc-full-processing" class="nav-link" data-scroll-target="#full-processing">Full processing</a></li>
   <li><a href="#incremental-processing-runs" id="toc-incremental-processing-runs" class="nav-link" data-scroll-target="#incremental-processing-runs">Incremental processing runs</a></li>
   </ul></li>
-  <li><a href="#luciusapi" id="toc-luciusapi" class="nav-link" data-scroll-target="#luciusapi"><code>LuciusAPI</code></a></li>
-  <li><a href="#customizations" id="toc-customizations" class="nav-link" data-scroll-target="#customizations">Customizations</a></li>
-  <li><a href="#processed-data-versions" id="toc-processed-data-versions" class="nav-link" data-scroll-target="#processed-data-versions">Processed data versions</a>
+  <li><a href="#luciusapi" id="toc-luciusapi" class="nav-link" data-scroll-target="#luciusapi"><code>LuciusAPI</code></a>
   <ul class="collapse">
+  <li><a href="#technical-details" id="toc-technical-details" class="nav-link" data-scroll-target="#technical-details">Technical details</a></li>
+  </ul></li>
+  <li><a href="#customizations" id="toc-customizations" class="nav-link" data-scroll-target="#customizations">Customizations</a>
+  <ul class="collapse">
+  <li><a href="#processed-data-versions" id="toc-processed-data-versions" class="nav-link" data-scroll-target="#processed-data-versions">Processed data versions</a></li>
   <li><a href="#other-customizations" id="toc-other-customizations" class="nav-link" data-scroll-target="#other-customizations">Other customizations</a></li>
   </ul></li>
   </ul>
@@ -383,6 +386,7 @@ Remark
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">utils/api/upload_jar</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">utils/api/initialize</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>At this point, the data will be loaded and cached in memory on the Spark cluster. The caching is important for performance. You can check the status of the initialization job using the jobserver console or the CLI (see below under Troubleshooting).</p>
+<p>Please note that while the <code>processing</code> step only requires the profiles, profile meta and gene annotations, LuciusAPI also needs treatment annotations and cell annotations. Those have to be provided.</p>
 <p>When the <code>initialization</code> job has finished, a check can be performed:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">utils/api/check</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>You’ll get some basic statistics about what is available in the dataset. If this works, there’s a high chance that the frontend will work!</p>
@@ -399,17 +403,21 @@ Warning
 <p>Do not remove the context unless you really intend to do that: removing the context will stop the application from working.</p>
 </div>
 </div>
+<section id="technical-details" class="level3">
+<h3 class="anchored" data-anchor-id="technical-details">Technical details</h3>
+<p>Every tool in the toolbox in fact performs a <code>POST</code> REST request to LuciusAPI or LuciusProcessing. This <code>POST</code> request includes a so-called payload or a configuration object for this specific endpoint or function. The <code>processing/process</code> and <code>api/initialize</code> also require such a configuration payload. The template for this can be found under <code>etc/</code>. There is one config file for <code>LuciusAPI</code> and one for <code>LuciusProcessing</code>. A simple templating mechanism is used where variables that require subsitition are enclosed by two underscores (<code>__</code>).</p>
+</section>
 </section>
 <section id="customizations" class="level2">
 <h2 class="anchored" data-anchor-id="customizations">Customizations</h2>
-</section>
-<section id="processed-data-versions" class="level2">
-<h2 class="anchored" data-anchor-id="processed-data-versions">Processed data versions</h2>
+<section id="processed-data-versions" class="level3">
+<h3 class="anchored" data-anchor-id="processed-data-versions">Processed data versions</h3>
 <p>As noted above, processed data is stored with a major/minor versioning scheme: major versions for full processing runs, minor versions for incremental runs. Each new full run generates a new major version and consequently the <code>utils/api/initialization</code> tool should pick out the correct one to initialize the context.</p>
 <p>The default is set to 0, but one will often require different versions. One approach is to update the <code>_viash.yaml</code> file and encode the proper default there.</p>
 <p>Another approach is to simply uses the arguments to modify the behavior of the <code>initialize</code> tool:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">utils/api/initialize</span> <span class="at">--db_version</span> 2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Please note that we only select a major version because all minor versions are incremental runs on top of version 2.0.</p>
+</section>
 <section id="other-customizations" class="level3">
 <h3 class="anchored" data-anchor-id="other-customizations">Other customizations</h3>
 <p>It’s possible to edit the <code>_viash.yaml</code> file and run <code>bin/build.sh</code> again in order to create the <code>utils/</code> toolbox with new defaults. It’s also possible to use the arguments available, just be sure to use them consistenly.</p>

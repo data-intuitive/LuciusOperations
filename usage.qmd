@@ -187,6 +187,8 @@ utils/api/initialize
 
 At this point, the data will be loaded and cached in memory on the Spark cluster. The caching is important for performance. You can check the status of the initialization job using the jobserver console or the CLI (see below under Troubleshooting).
 
+Please note that while the `processing` step only requires the profiles, profile meta and gene annotations, LuciusAPI also needs treatment annotations and cell annotations. Those have to be provided.
+
 When the `initialization` job has finished, a check can be performed:
 
 ```sh
@@ -199,10 +201,13 @@ You'll get some basic statistics about what is available in the dataset. If this
 Do not remove the context unless you really intend to do that: removing the context will stop the application from working.
 :::
 
+### Technical details
+
+Every tool in the toolbox in fact performs a `POST` REST request to LuciusAPI or LuciusProcessing. This `POST` request includes a so-called payload or a configuration object for this specific endpoint or function. The `processing/process` and `api/initialize` also require such a configuration payload. The template for this can be found under `etc/`. There is one config file for `LuciusAPI` and one for `LuciusProcessing`. A simple templating mechanism is used where variables that require subsitition are enclosed by two underscores (`__`).
+
 ## Customizations
 
-
-## Processed data versions
+### Processed data versions
 
 As noted above, processed data is stored with a major/minor versioning scheme: major versions for full processing runs, minor versions for incremental runs. Each new full run generates a new major version and consequently the `utils/api/initialization` tool should pick out the correct one to initialize the context.
 
