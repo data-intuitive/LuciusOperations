@@ -30,6 +30,14 @@ In order to aid in connecting to the APIs and as such also perform basic process
 
 The short version is to fetch the LuciusOperations repository, make sure you have Java 8 or higher installed and run `bin/build.sh`. After this, the tools for [LuciusProcessing] and [LuciusAPI] are respectively under `utils/processing` and `utils/api`:
 
+```sh
+git clone https://github.com/data-intuitive/LuciusOperations
+cd LuciusOperations
+bin/build.sh
+```
+
+The following _tools_ will be created:
+
 ```
 utils
 ├── api
