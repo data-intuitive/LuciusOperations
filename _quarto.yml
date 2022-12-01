@@ -5,7 +5,7 @@ project:
     - README.md
     - usage.qmd
     - installation.qmd
-    - troubleshooting.qmd
+    - tips.qmd
 
 website:
   title: "LuciusOperations"
@@ -17,8 +17,8 @@ website:
         text: Installation 
       - href: usage.qmd
         text: Usage
-      - href: troubleshooting.qmd
-        text: Troubleshooting
+      - href: tips.qmd
+        text: Tips
 
 format:
   html:

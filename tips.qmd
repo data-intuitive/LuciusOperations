@@ -1,5 +1,5 @@
 ---
-title: Troubleshooting
+title: Tips
 engine: kntir
 ---
 
@@ -28,6 +28,33 @@ If you know the job number, you could alternatively open the job page directly:
 ```
 <endpoint>/jobs/<jobID>
 ```
+
+## Running remotely
+
+In many cases, we will run the LuciusOperations on the same instance that the spark jobserver itself is running. This means that the endpoint to connect to will often be:
+
+```
+http://localhost:8090
+```
+
+Since the spark jobserver is a REST service, you don't have to be logged in via a remote session to this instance itself. If you know the URL of the spark jobserver, it's easy to run the tools with that:
+
+```sh
+utils/processing/check --endpoint https://...
+```
+
+Alternatively, you can add the following line to the `_viash.yaml` file and run `bin/build.sh` again:
+
+```
+.functionality.arguments[.name == '--endpoint'].default := 'https://...'
+```
+
+This is a very handy way to verify if the backend of Lucius is still running:
+
+```sh
+utils/api/check --endpoint https://...
+```
+
 ## Getting job output when the request times out
 
 Sometimes, the following message or something similar can be returned:
