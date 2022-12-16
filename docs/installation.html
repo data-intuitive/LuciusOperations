@@ -197,6 +197,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
+<div class="cell">
+
+</div>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>LuciusOperations uses <a href="https://viash.io">Viash</a> to convert relatively simple scripts containing REST calls into configurable CLI tools.</p>
@@ -206,29 +209,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell-output cell-output-stdout">
 <pre><code>
 &gt;&gt; Building both namespaces
-[31mReading file '/Users/toni/code/compass/LuciusOperations/src/processing/check/config.vsh.yaml' failed[0m
-[31mReading file '/Users/toni/code/compass/LuciusOperations/src/processing/process/config.vsh.yaml' failed[0m
-[31mReading file '/Users/toni/code/compass/LuciusOperations/src/api/initialize/config.vsh.yaml' failed[0m
 Exporting create_context (processing) =native=&gt; utils/processing
 Exporting upload_jar (processing) =native=&gt; utils/processing
 Exporting remove_context (processing) =native=&gt; utils/processing
 Exporting fetch_jar (processing) =native=&gt; utils/processing
-[33mNot all configs built successfully[0m
-  [31m3/12 configs encountered parse errors[0m
-  [33m5/12 configs were disabled[0m
-  [32m4/12 configs built successfully[0m
-[31mReading file '/Users/toni/code/compass/LuciusOperations/src/processing/check/config.vsh.yaml' failed[0m
-[31mReading file '/Users/toni/code/compass/LuciusOperations/src/processing/process/config.vsh.yaml' failed[0m
-[31mReading file '/Users/toni/code/compass/LuciusOperations/src/api/initialize/config.vsh.yaml' failed[0m
+Exporting check (processing) =native=&gt; utils/processing
+Exporting process (processing) =native=&gt; utils/processing
+Not all configs built successfully
+  6/12 configs were disabled
+  6/12 configs built successfully
 Exporting create_context (api) =native=&gt; utils/api
 Exporting upload_jar (api) =native=&gt; utils/api
+Exporting initialize (api) =native=&gt; utils/api
 Exporting remove_context (api) =native=&gt; utils/api
 Exporting fetch_jar (api) =native=&gt; utils/api
 Exporting check (api) =native=&gt; utils/api
-[33mNot all configs built successfully[0m
-  [31m3/12 configs encountered parse errors[0m
-  [33m4/12 configs were disabled[0m
-  [32m5/12 configs built successfully[0m
+Not all configs built successfully
+  6/12 configs were disabled
+  6/12 configs built successfully
 
 &gt;&gt; Please see under utils/ to find the tools for api and processing...</code></pre>
 </div>
@@ -274,17 +272,17 @@ Arguments:
 <p>The format of the configuration in <code>_viash.yaml</code> is derived from the way <a href="https://stedolan.github.io/jq/">jq</a> allows to query and update JSON blobs. It should be clear from the example in the repository how to use it:</p>
 <div class="cell">
 <div class="sourceCode" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span><span class="kw">:</span><span class="at"> src</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">target</span><span class="kw">:</span><span class="at"> target</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">target</span><span class="kw">:</span><span class="at"> utils</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">config_mods</span><span class="kw">: </span><span class="ch">|</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  .functionality.version := 'dev'</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--application'].default := 'luciusprocessing-dev'</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--db'].default := '&lt;pointer to processed data location&gt;'</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--db_version'].default := '&lt;version&gt;'</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--input'].default := '&lt;pointer to original batches&gt;'</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--geneAnnotations'].default := '&lt;pointer to gene annotation file&gt;'</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--treatmentAnnotations'].default := '&lt;pointer to treatment annotation file&gt;'</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--cellAnnotations'].default := '&lt;pointer to cell annotation file&gt;'</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--db'].default := '/Users/toni/Dropbox/_GSK/2022/output-data'</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--db_version'].default := 0</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--input'].default := '/Users/toni/Dropbox/_GSK/2022/l1k_l5_subset'</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--application'].default := 'luciusapi'</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--geneAnnotations'].default := '/Users/toni/Dropbox/_GSK/2022/l1k_l5_subset/l1k_gene_xref/l1k_gene_xref.parquet'</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--treatmentAnnotations'].default := '/Users/toni/Dropbox/_GSK/2022/l1k_l5_subset/pert_xref/pert_xref.parquet'</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  .functionality.arguments[.name == '--cellAnnotations'].default := '/Users/toni/Dropbox/_GSK/2022/l1k_l5_subset/cell_xref/cell_xref.parquet'</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>bin/build.sh</code> script uses Viash to create 2 subdirectories under <code>utils/</code> containing tools that are used for the <em>processing</em> part and for the <em>api</em> part:</p>
 <div class="cell">
