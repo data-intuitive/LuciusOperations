@@ -3,8 +3,8 @@ arguments:
     type: string
     description: The directory where the source for CMap is located.
   - name: --db_version
-    type: integer
-    description: Major version of the database source to be used for initialization.
+    type: string
+    description: Major version of the database source to be used for initialization or 'latest'
   - name: --input
     type: string
     description: The source directory with data for preprocessing. 
