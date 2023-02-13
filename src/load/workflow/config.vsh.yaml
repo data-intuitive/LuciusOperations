@@ -1,0 +1,23 @@
+functionality:
+  name: workflow
+  description: A representative run of the disease workflow, involving a signature query.
+  namespace: load
+  arguments:
+    - name: --run_id
+      type: string
+      default: run
+    - name: --jobserver
+      type: string
+      default: http://localhost:8090
+    - name: --query
+      type: string
+      default: HSPA1A DNAJB1 DDIT4 -TSEN2
+    - name: --output
+      type: file
+      direction: output
+      default: run.json
+  resources:
+    - type: bash_script
+      path: code.sh
+platforms:
+  - type: native
