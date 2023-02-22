@@ -19,6 +19,11 @@ URI="${par_base}/v${par_tag}/${JAR}"
 
 par_options="context-factory=spark.jobserver.context.SessionContextFactory&${par_generic_options}"
 
+if [ ! -f "${par_target}/${JAR}" ]; then
+  echo "Could not find ${par_target}/${JAR}"
+  exit 1
+fi
+
 TARGET="@${par_target}/${JAR}"
 
 echo
