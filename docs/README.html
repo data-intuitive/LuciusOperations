@@ -211,14 +211,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     ├── fetch_jar
     ├── process
     ├── remove_context
-    └── upload_jar
-    ```
+    └── upload_jar</code></pre>
+<p>Every tool in the toolbox is a (Viash) standalone script that contains it’s own help, i.e.:</p>
+<pre><code>❯ utils/processing/check -h
+check dev
 
-Every tool in the toolbox is a (Viash) standalone script that contains it's own help, i.e.:
-</code></pre>
-<p>❯ utils/processing/check -h check dev</p>
-<p>Arguments: –endpoint type: string default: http://localhost:8090 The endpoint (URL) to connect to</p>
-<p>… ```</p>
+Arguments:
+--endpoint
+type: string
+default: http://localhost:8090
+The endpoint (URL) to connect to
+
+...</code></pre>
 <p>Please refer to the <a href="./installation.html">installation</a> instructions for more information about what is happening behind the scenes.</p>
 </section>
 <section id="usage" class="level2">

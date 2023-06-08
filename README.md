@@ -54,7 +54,7 @@ utils
     ├── process
     ├── remove_context
     └── upload_jar
-    ```
+```
 
 Every tool in the toolbox is a (Viash) standalone script that contains it's own help, i.e.:
 
