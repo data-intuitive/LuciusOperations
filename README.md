@@ -48,13 +48,13 @@ utils
 │   ├── remove_context
 │   └── upload_jar
 └── processing
-├── check
-├── create_context
-├── fetch_jar
-├── process
-├── remove_context
-└── upload_jar
-```
+    ├── check
+    ├── create_context
+    ├── fetch_jar
+    ├── process
+    ├── remove_context
+    └── upload_jar
+    ```
 
 Every tool in the toolbox is a (Viash) standalone script that contains it's own help, i.e.:
 

@@ -36,6 +36,20 @@ bin/build.sh
 This description deals with the installation and configuration of LuciusOperations only.
 :::
 
+## Where to run
+
+### Generic installation
+
+It does not matter where the tools in this toolset are used, as long as `wget` and `curl` are available on the device and the DNS endpoints of the Spark Jobserver can be resolved, it should work.
+
+In order to run the processing jobs in `api` and `processing`, however, it's important to collect the appropriate JAR files. Those define the logic (i.e. the code) to actually run on the Spark cluster. Both the `api` as well as the `processing` toolset have an `upload_jar` tool that can be used to upload the appropriate JAR file to the Spark Jobserver.
+
+We will often run the LuciusOperations tools from the SparkJobser instance itself. This allows us to use the (locally) available JAR files that have been used to initialize the API in the first place. Connecting to a Spark Jobserver instance depends on your installation.
+
+### Suggested installation
+
+We suggest to run the LuciusOperations tools from an instance running the Lucius backend. Nothing has to be installed in that case, please see [here](usage.qmd#suggested-setup) for more information.
+
 ## Technical details
 
 Every Viash component contains a `script.sh` file (usually some parameter handling and a command to execute) and a `config.vsh.yaml` file which contains the configuration for the component.
@@ -50,6 +64,7 @@ An illustration of the CLI argument parsing capabilities:
 ```{sh}
 utils/processing/check -h | head
 ```
+
 The format of the configuration in `_viash.yaml` is derived from the way [jq](https://stedolan.github.io/jq/) allows to query and update JSON blobs. It should be clear from the example in the repository how to use it:
 
 ```{embed lang="yaml"}

@@ -25,7 +25,7 @@ We pick up the data at this stage and prepare it for use with Lucius. That's wha
 
 ## `LuciusProcessing`
 
-### Setup
+### Generic setup information
 
 We first have to initialize a spark-jobserver (and consequently Spark) context in which our subsequent jobs will run. We assume the `bin/build.sh` has been run already, that leaves us with:
 
@@ -61,7 +61,73 @@ If you get something like this it means something is wrong with the JAR file:
 }
 ```
 
-### Introduction
+### Suggested setup
+
+When we deploy LuciusAPI and LuciusOperations, we build/deploy the JAR files on one instance (or pod) together with the Spark Jobserver runtime. Next, we LuciusOperations to initialize the LuciusAPI backend on the instance itself. This means that all necessary ingredients for running LuciusOperations (both the `api` and the `processing`) part are available on the host:
+
+1. The necessary JAR files
+2. The Spark Jobserver endpoint (it's just `localhost:8090`)
+3. A working `_viash.yaml` configuration file
+
+:::{.callout-note}
+The login info for this instance is project-specific and will be provided separately.
+:::
+
+Open a shell on the jobserver instance, let's assume the following directory structure:
+
+```txt
+/home
+  LuciusAPI
+  LuciusProcessing
+  luciusoperations
+  LuciusAPI.jar
+  LuciusProcessing.jar
+```
+
+Since this is a running Spark-Jobserver instance (contrary to the generic setup above), the configuration under `luciusoperations` is guaranteed to be correct[^correct].
+
+[^correct]: There is one caveat, though. In order to load-balance different _contexts_, we leave the name of the context/application set to `REPLACE_ME`.
+
+1. In order to avoid interferring with the running services and applications, we make a copy of the `luciusoperations` directory first:
+
+    ```sh
+    cd /home
+    cp -r luciusoperations luciusoperations-process
+    cd luciusoperations-process
+    ```
+
+2. Now, open the `_viash.yaml` file and replace `REPLACE_ME` with `luciusprocessing`. Alternatively, use the following `sed` instruction to achieve the same from the CLI directly:
+
+    ```sh
+    sed -i 's/REPLACE_ME/luciusprocessing/' _viash.yaml
+    ```
+
+3. Run `bin/build.sh` in order to update the tools under `utils/`.
+
+4. Initialize a new context:
+
+    ```sh
+    utils/processing/create_context
+    ```
+
+    This can take minute to complete, the result should be a status message in JSON format saying `Context initialized`.
+
+5. Upload the JAR file:
+
+    ```sh
+    utils/processing/upload_jar
+    ```
+    Since the JAR is uploaded to `localhost` (on port `8090` to be precise), this is fast.
+
+6.  Run the processing job. See further down this document for more information about incremental and full processing jobs and how to configure those. For completeness, if a full processing job is required this would entail running:
+
+    ```sh
+    utils/processing/process
+    ```
+
+The process may take a lot of time, and that's expected. It can be monitored by opening the [Spark Jobserver console](tips.qmd#spark-jobserver-console).
+
+### What is processed?
 
 LuciusProcessing transforms the data from preprocessed (per batch) data that is normalized to denormalized data in one or multiple 'files' per version (see later).
 
